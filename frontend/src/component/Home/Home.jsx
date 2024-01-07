@@ -1,51 +1,76 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { CgMouse } from "react-icons/cg";
 import "./Home.css";
-import ProductCard from "./ProductCard"
+import ProductCard from "./ProductCard";
 import MetaData from "../layout/MetaData";
+import { getProduct } from "../../actions/productAction";
+import { useSelector, useDispatch } from "react-redux";
+import Loader from "../layout/loader/loader";
+import { useAlert } from "react-alert";
 
-
-const product = {
-    name: "Blue Shirt",
-    images: [{ url: "https://png.pngtree.com/png-clipart/20220729/original/pngtree-formal-mens-ultra-marine-blue-shirt-with-black-pant-free-png-png-image_8422710.png" }],
-    price: "₹3000",
-    _id: "Krishna",
-
-}
+// const product = {
+//   name: "Blue Shirt",
+//   images: [
+//     {
+//       url: "https://png.pngtree.com/png-clipart/20220729/original/pngtree-formal-mens-ultra-marine-blue-shirt-with-black-pant-free-png-png-image_8422710.png",
+//     },
+//   ],
+//   price: "₹3000",
+//   _id: "Krishna",
+// };
 
 const Home = () => {
-    return (
+  const alert = useAlert();
+  const dispatch = useDispatch();
+  const { loading, error, products, productCount } = useSelector(
+    (state) => state.products
+  );
+
+  useEffect(() => {
+    if (error) {
+      return alert.error(error);
+    }
+    dispatch(getProduct());
+  }, [dispatch, error]);
+
+  return (
+    <Fragment>
+      {loading ? (
+        <Loader />
+      ) : (
         <Fragment>
-            <MetaData title={"ECOMMERCE"} />
-            <div className="banner">
-                <p>Welcome to Ecommerce</p>
-                <h1>FIND AMAZING PRODUCTS BELOW</h1>
+          <MetaData title={"ECOMMERCE"} />
+          <div className="banner">
+            <p>Welcome to Ecommerce</p>
+            <h1>FIND AMAZING PRODUCTS BELOW</h1>
 
-                <a href="#container">
-                    <button>
-                        Scroll <CgMouse />
-                    </button>
-                </a>
-            </div>
+            <a href="#container">
+              <button>
+                Scroll <CgMouse />
+              </button>
+            </a>
+          </div>
 
-            <h2 className="homeHeading">Featured Products</h2>
+          <h2 className="homeHeading">Featured Products</h2>
 
-            <div className="container" id="container">
-                <ProductCard product={product} />
-                <ProductCard product={product} />
-                <ProductCard product={product} />
-                <ProductCard product={product} />
+          <div className="container" id="container">
+            {/* <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
 
-                <ProductCard product={product} />
-                <ProductCard product={product} />
-                <ProductCard product={product} />
-                <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} /> */}
 
-            </div>
+            {products &&
+              products.map((product) => <ProductCard product={product} />)}
+          </div>
         </Fragment>
-
-
-    )
-}
+      )}
+    </Fragment>
+  );
+};
 
 export default Home;
