@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard";
 import MetaData from "../layout/MetaData";
 import { getProduct } from "../../actions/productAction";
 import { useSelector, useDispatch } from "react-redux";
-import Loader from "../layout/loader/loader";
+import Loader from "../layout/Loader/Loader";
 import { useAlert } from "react-alert";
 
 // const product = {
@@ -20,9 +20,11 @@ import { useAlert } from "react-alert";
 // };
 
 const Home = () => {
+  
   const alert = useAlert();
   const dispatch = useDispatch();
-  const { loading, error, products, productCount } = useSelector(
+
+  const { loading, error, products } = useSelector(
     (state) => state.products
   );
 
@@ -31,7 +33,7 @@ const Home = () => {
       return alert.error(error);
     }
     dispatch(getProduct());
-  }, [dispatch, error]);
+  }, [dispatch, error, alert]);
 
   return (
     <Fragment>
@@ -65,7 +67,7 @@ const Home = () => {
         <ProductCard product={product} /> */}
 
             {products &&
-              products.map((product) => <ProductCard product={product} />)}
+              products.map((product) => <ProductCard key={product._id} product={product} />)}
           </div>
         </Fragment>
       )}
