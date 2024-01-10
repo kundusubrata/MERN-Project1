@@ -9,7 +9,7 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const { loading, error, product } = useSelector(
+  const { product } = useSelector(
     (state) => state.productDetails
   );
 
@@ -17,7 +17,6 @@ const ProductDetails = () => {
     dispatch(getProductDetails(id));
   }, [dispatch, id]);
 
-  console.log(product);
 
   return (
     <Fragment>
