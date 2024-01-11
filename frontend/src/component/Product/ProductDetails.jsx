@@ -4,6 +4,7 @@ import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import { getProductDetails } from "../../actions/productAction";
 import { useParams } from "react-router-dom";
+import MetaData from "../layout/MetaData";
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const ProductDetails = () => {
 
   return (
     <Fragment>
+      <MetaData title={`${product.name} -- ECOMMERCE`} />
       <div className="ProductDetails">
         <div>
           <Carousel>
