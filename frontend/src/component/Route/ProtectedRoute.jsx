@@ -1,31 +1,20 @@
-import React ,{Fragment} from 'react';
+// ProtectedRoute.jsx
+import React, { useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Navigate, Route } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
 
-const ProtectedRoute = ({component: Component,...rest}) => {
-    const {loading,isAuthenticated,user} = useSelector((state) => state.user);
-  return (
-    <Fragment>
-        {!loading && (
-            <Route
-            {...rest}
-            render = {(props) => {
-                if(!isAuthenticated) {
-                    return <Navigate to="/login" replace />
-                }
-                return (
-                    <>
-                      {/* Render any content specific to ProtectedRoute */}
-                      <Component {...props} />
-                      <Outlet /> {/* Render nested routes here */}
-                    </>
-                  );
-            }}
-            />
-        )}
-    </Fragment>
-  )
-}
+const ProtectedRoute = ({ element, adminOnly = false }) => {
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
-export default ProtectedRoute
+  useEffect(() => {
+    if (adminOnly && (!isAuthenticated || user.role !== 'admin')) {
+      // Redirect to login if not authenticated or not an admin
+      navigate('/login');
+    }
+  }, [isAuthenticated, user, adminOnly, navigate]);
+
+  return isAuthenticated ? element : <Navigate to="/login" />;
+};
+
+export default ProtectedRoute;

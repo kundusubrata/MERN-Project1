@@ -7,11 +7,11 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import PersonIcon from "@mui/icons-material/Person";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { logout } from "../../../actions/userAction";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const UserOptions = ({ user }) => {
   //   const { cartItems } = useSelector((state) => state.cart);
@@ -21,7 +21,7 @@ const UserOptions = ({ user }) => {
   const alert = useAlert();
   const dispatch = useDispatch();
 
-//   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  //   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   const options = [
     { icon: <ListAltIcon />, name: "Orders", func: orders },
@@ -37,7 +37,6 @@ const UserOptions = ({ user }) => {
     // },
     { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
   ];
-
 
   if (user && user.role === "admin") {
     options.unshift({
