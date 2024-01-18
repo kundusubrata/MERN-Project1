@@ -17,7 +17,7 @@ import "./payment.css";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import EventIcon from "@material-ui/icons/Event";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
-// import { createOrder, clearErrors } from "../../actions/orderAction";
+import { createOrder, clearErrors } from "../../actions/orderAction";
 import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
@@ -32,24 +32,20 @@ const Payment = () => {
 
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
-//   const { error } = useSelector((state) => state.newOrder || {});
+  const { error } = useSelector((state) => state.newOrder);
 
   const paymentData = {
     amount: Math.round(orderInfo.totalPrice * 100),
-    currency: "inr",
-    email: "",
-    country: "", 
-    cardholderName: "", 
   };
 
-//   const order = {
-//     shippingInfo,
-//     orderItems: cartItems,
-//     itemsPrice: orderInfo.subtotal,
-//     taxPrice: orderInfo.tax,
-//     shippingPrice: orderInfo.shippingCharges,
-//     totalPrice: orderInfo.totalPrice,
-//   };
+  const order = {
+    shippingInfo,
+    orderItems: cartItems,
+    itemsPrice: orderInfo.subtotal,
+    taxPrice: orderInfo.tax,
+    shippingPrice: orderInfo.shippingCharges,
+    totalPrice: orderInfo.totalPrice,
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -68,7 +64,7 @@ const Payment = () => {
         config
       );
 
-      const client_secret = data.client_secret;      
+      const client_secret = data.client_secret;
 
       if (!stripe || !elements) return;
 
@@ -88,20 +84,19 @@ const Payment = () => {
           },
         },
       });
-      console.log("Payment Result:", result);
+
       if (result.error) {
-        console.error("Payment error:", result.error);
         payBtn.current.disabled = false;
 
         alert.error(result.error.message);
       } else {
         if (result.paymentIntent.status === "succeeded") {
-        //   order.paymentInfo = {
-        //     id: result.paymentIntent.id,
-        //     status: result.paymentIntent.status,
-        //   };
+          order.paymentInfo = {
+            id: result.paymentIntent.id,
+            status: result.paymentIntent.status,
+          };
 
-        //   dispatch(createOrder(order));  
+          dispatch(createOrder(order));
 
           navigate("/success");
         } else {
@@ -110,17 +105,16 @@ const Payment = () => {
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      console.error("Payment processing error:", error);
       alert.error(error.response.data.message);
     }
   };
 
-//   useEffect(() => {
-    // if (error) {
-    //   alert.error(error);
-    //   dispatch(clearErrors());
-    // }
-//   }, [dispatch, error, alert]);
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+  }, [dispatch, error, alert]);
 
   return (
     <Fragment>
@@ -140,37 +134,6 @@ const Payment = () => {
           <div>
             <VpnKeyIcon />
             <CardCvcElement className="paymentInput" />
-          </div>
-
-          {/* <input
-            type="submit"
-            value={`Pay - ₹${orderInfo && orderInfo.totalPrice}`}
-            ref={payBtn}
-            className="paymentFormBtn"
-          /> */}
-           <div>
-            <label>Email</label>
-            <input
-              type="email"
-              onChange={(e) => (paymentData.email = e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Country</label>
-            <input
-              type="text"
-              onChange={(e) => (paymentData.country = e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Cardholder Name</label>
-            <input
-              type="text"
-              onChange={(e) => (paymentData.cardholderName = e.target.value)}
-              required
-            />
           </div>
 
           <input

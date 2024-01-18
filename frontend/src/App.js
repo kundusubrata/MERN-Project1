@@ -1,7 +1,7 @@
 import "./App.css";
 import Header from "./component/layout/Header/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Webfont from "webfontloader";
+import WebFont from "webfontloader";
 import { React, useEffect, useState } from "react";
 import Footer from "./component/layout/Footer/Footer";
 import Home from "./component/Home/Home";
@@ -26,10 +26,16 @@ import axios from "axios";
 import Payment from "./component/Cart/Payment";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import OrderSuccess from "./component/Cart/OrderSuccess";
+import OrderDetails from "./component/Order/OrderDetails";
+import MyOrder from "./component/Order/MyOrder";
+import Dashboard from "./component/Admin/Dashboard";
+import ProductList from "./component/Admin/ProductList";
 
 function App() {
-  const { isAuthenticated, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+
   const [stripeApiKey, setStripeApiKey] = useState("");
 
   async function getStripeApiKey() {
@@ -38,13 +44,14 @@ function App() {
   }
 
   useEffect(() => {
-    Webfont.load({
+    WebFont.load({
       google: {
         families: ["Roboto", "Droid Sans", "Chilanka"],
       },
     });
 
     store.dispatch(loadUser());
+
     getStripeApiKey();
   }, [dispatch]);
 
@@ -89,11 +96,7 @@ function App() {
           path="/login/shipping"
           element={<ProtectedRoute element={<Shipping />} />}
         />
-        <Route
-          exact
-          path="/order/confirm"
-          element={<ProtectedRoute element={<ConfirmOrder />} />}
-        />
+
         {/* {stripeApiKey && (
           <Elements stripe={loadStripe(stripeApiKey)}>
             <Route
@@ -113,8 +116,37 @@ function App() {
             ) : null
           }
         />
+        <Route
+          exact
+          path="/success"
+          element={<ProtectedRoute element={<OrderSuccess />} />}
+        />
+        <Route
+          exact
+          path="/orders"
+          element={<ProtectedRoute element={<MyOrder />} />}
+        />
+        <Route
+          exact
+          path="/order/confirm"
+          element={<ProtectedRoute element={<ConfirmOrder />} />}
+        />
+        <Route
+          exact
+          path="/order:id"
+          element={<ProtectedRoute element={<OrderDetails />} />}
+        />
+        <Route
+          exact
+          path="/admin/dashboard"
+          element={<ProtectedRoute element={<Dashboard />} />}
+        />
+        <Route
+          exact
+          path="/admin/products"
+          element={<ProtectedRoute element={<ProductList />} />}
+        />
       </Routes>
-
       <Footer />
     </Router>
   );
