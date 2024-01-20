@@ -67,7 +67,7 @@ const Home = () => {
         <ProductCard product={product} />
         <ProductCard product={product} /> */}
 
-            {products &&
+            {Array.isArray(products) && products &&
               products.map((product) => <ProductCard key={product._id} product={product} />)}
           </div>
         </Fragment>
